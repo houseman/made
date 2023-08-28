@@ -1,26 +1,19 @@
 vars:
   - id: pip-args
     value: --quiet --upgrade
-  - id: pip-tools-args
-    value: --upgrade --no-emit-index-url --no-emit-trusted-host
 jobs:
   - id: lint
     jobs:
-      - id: black
+      - id: format
         run: black
+        args: ["."]
       - id: ruff
         run: ruff
-        args: ["--no-fix"]
+        args: ["--fix", "."]
   - id: test
-    requires: [lint]
-    jobs:
-      - id: pytest
-        run: pytest
-  - id: install-pip-tools
+    run: pytest
+  - id: check
+    run: [lint, test]
+  - id: upgrade-pip
     run: pip
-    vars: [pip-args]
-    args: ["install", "pip-tools"]
-  - id: pip-sync
-    requires: [install-pip-tools]
-    run: python
-    args: ["-m", "pip-tools", "sync"]
+    args: ["install", "${pip-args}", "pip"]
