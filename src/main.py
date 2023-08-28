@@ -1,5 +1,5 @@
-from controller import MadeController
+from view import cli
+
 
 if __name__ == "__main__":
-    controller = MadeController()
-    controller.run()
+    cli()

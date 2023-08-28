@@ -14,6 +14,7 @@ class VarSchemaSource(BaseSchemaSource):
 
 class JobSchemaSource(BaseSchemaSource):
     id: str
+    help: str
     run: str
     args: list[str]
     jobs: list[JobSchemaSource]

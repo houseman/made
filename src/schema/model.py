@@ -3,7 +3,7 @@ from __future__ import annotations
 import re
 from abc import ABC, abstractmethod
 from dataclasses import asdict, dataclass, field
-from typing import Self, Any
+from typing import Self, Any, TypeAlias
 
 from schema.source import VarSchemaSource, JobSchemaSource, MadeSchemaSource
 from error import SchemaError, VarError
@@ -62,6 +62,7 @@ class VarSchema(BaseSchema):
 @dataclass
 class JobSchema(BaseSchema):
     id: str
+    help: str | None = None
     run: str | None = None
     jobs: dict[str, JobSchema] = field(default_factory=dict)
     args: list[str] = field(default_factory=list)
@@ -85,16 +86,21 @@ class JobSchema(BaseSchema):
     def from_dict(source: JobSchemaSource) -> JobSchema:
         return JobSchema(
             id=source["id"],
+            help=source.get("help"),
             run=source.get("run"),
             args=source.get("args", []),
             jobs={js["id"]: JobSchema.from_dict(js) for js in source.get("jobs", [])},
         ).validate()
 
 
+JobCollection: TypeAlias = dict[str, JobSchema]
+VarCollection: TypeAlias = dict[str, VarSchema]
+
+
 @dataclass
 class MadeSchema(BaseSchema):
-    vars: dict[str, VarSchema]
-    jobs: dict[str, JobSchema]
+    vars: VarCollection
+    jobs: JobCollection
 
     def validate(self) -> Self:
         for job in self.jobs.values():

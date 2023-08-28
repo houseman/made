@@ -3,17 +3,23 @@ vars:
     value: --quiet --upgrade
 jobs:
   - id: lint
-    jobs:
-      - id: format
-        run: black
-        args: ["."]
-      - id: ruff
-        run: ruff
-        args: ["--fix", "."]
+    help: Run linting
+    run: [format, ruff]
+  - id: format
+    help: Run the black formatter
+    run: black
+    args: ["."]
+  - id: ruff
+    help: Run the ruff linter
+    run: ruff
+    args: ["--fix", "."]
   - id: test
+    help: Run unit tests
     run: pytest
   - id: check
+    help: Run CI/CD checks
     run: [lint, test]
   - id: upgrade-pip
+    help: Upgrade pip version
     run: pip
     args: ["install", "${pip-args}", "pip"]
