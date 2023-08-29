@@ -1,11 +1,11 @@
 import click
 import subprocess
 
-from made.schema.model import JobSchema
+from made.model import JobModel
 
 
 class MadeCommand(click.Command):
-    def __init__(self, job: JobSchema):
+    def __init__(self, job: JobModel):
         self.job = job
         super().__init__(job.id, callback=self.exec)
 

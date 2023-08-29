@@ -2,7 +2,7 @@ from pprint import pformat
 import click
 import yaml
 
-from made.schema.model import MadeSchema, JobCollection
+from made.model import MadeModel, JobModelCollection
 from made.command import MadeCommand
 
 
@@ -16,11 +16,11 @@ class MadeController:
         with open("made-file.yaml") as made_file:
             made_config = yaml.safe_load(made_file)
 
-        self.schema = MadeSchema.from_dict(made_config)
+        self.schema = MadeModel.from_dict(made_config)
         if self.verbose:
             print(f"schema: {pformat(self.schema)}")
 
-    def get_jobs(self) -> JobCollection:
+    def get_jobs(self) -> JobModelCollection:
         return self.schema.jobs
 
     def register_job_commands(self) -> click.Group:

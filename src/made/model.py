@@ -5,23 +5,23 @@ from abc import ABC, abstractmethod
 from dataclasses import asdict, dataclass, field
 from typing import Self, Any, TypeAlias
 
-from made.schema.source import VarSchemaSource, JobSchemaSource, MadeSchemaSource
+from made.schema import VarSchema, JobSchema, MadeSchema
 from made.error import SchemaError, VarError
 
 
-class AbstractBaseSchema(ABC):
+class AbstractBaseModel(ABC):
     @abstractmethod
     def validate(self) -> Self:
         pass
 
     @staticmethod
     @abstractmethod
-    def from_dict(source: Any) -> AbstractBaseSchema:  # TODO: Get rid of `Any`
+    def from_dict(source: Any) -> AbstractBaseModel:  # TODO: Get rid of `Any`
         pass
 
 
 @dataclass
-class BaseSchema(AbstractBaseSchema):
+class BaseModel(AbstractBaseModel):
     def validate(self) -> Self:
         return self
 
@@ -45,7 +45,7 @@ class BaseSchema(AbstractBaseSchema):
 
 
 @dataclass
-class VarSchema(BaseSchema):
+class VarModel(BaseModel):
     id: str
     value: str
 
@@ -55,16 +55,16 @@ class VarSchema(BaseSchema):
         return self
 
     @staticmethod
-    def from_dict(source: VarSchemaSource) -> VarSchema:
-        return VarSchema(id=source["id"], value=source["value"]).validate()
+    def from_dict(source: VarSchema) -> VarModel:
+        return VarModel(id=source["id"], value=source["value"]).validate()
 
 
 @dataclass
-class JobSchema(BaseSchema):
+class JobModel(BaseModel):
     id: str
     help: str | None = None
     run: str | None = None
-    jobs: dict[str, JobSchema] = field(default_factory=dict)
+    jobs: dict[str, JobModel] = field(default_factory=dict)
     args: list[str] = field(default_factory=list)
 
     def validate(self) -> Self:
@@ -83,24 +83,24 @@ class JobSchema(BaseSchema):
         return None
 
     @staticmethod
-    def from_dict(source: JobSchemaSource) -> JobSchema:
-        return JobSchema(
+    def from_dict(source: JobSchema) -> JobModel:
+        return JobModel(
             id=source["id"],
             help=source.get("help"),
             run=source.get("run"),
             args=source.get("args", []),
-            jobs={js["id"]: JobSchema.from_dict(js) for js in source.get("jobs", [])},
+            jobs={js["id"]: JobModel.from_dict(js) for js in source.get("jobs", [])},
         ).validate()
 
 
-JobCollection: TypeAlias = dict[str, JobSchema]
-VarCollection: TypeAlias = dict[str, VarSchema]
+JobModelCollection: TypeAlias = dict[str, JobModel]
+VarModelCollection: TypeAlias = dict[str, VarModel]
 
 
 @dataclass
-class MadeSchema(BaseSchema):
-    vars: VarCollection
-    jobs: JobCollection
+class MadeModel(BaseModel):
+    vars: VarModelCollection
+    jobs: JobModelCollection
 
     def validate(self) -> Self:
         for job in self.jobs.values():
@@ -108,8 +108,8 @@ class MadeSchema(BaseSchema):
         return self
 
     @staticmethod
-    def from_dict(source: MadeSchemaSource) -> MadeSchema:
-        return MadeSchema(
-            vars={vs["id"]: VarSchema.from_dict(vs) for vs in source.get("vars", [])},
-            jobs={js["id"]: JobSchema.from_dict(js) for js in source.get("jobs", [])},
+    def from_dict(source: MadeSchema) -> MadeModel:
+        return MadeModel(
+            vars={vs["id"]: VarModel.from_dict(vs) for vs in source.get("vars", [])},
+            jobs={js["id"]: JobModel.from_dict(js) for js in source.get("jobs", [])},
         ).validate()
