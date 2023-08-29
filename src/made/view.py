@@ -1,5 +1,5 @@
 import click
-from controller import MadeController
+from made.controller import MadeController
 
 
 controller = MadeController()

@@ -1,0 +1,88 @@
+[project]
+name = "made"
+version = "0.0.0"
+authors = [{ name = "Scott Houseman", email = "scott.houseman@gmail.com" }]
+maintainers = [{ name = "Scott Houseman", email = "scott.houseman@gmail.com" }]
+description = "Made can make things happen"
+requires-python = ">=3.11"
+license = { file = "LICENSE" }
+keywords = ["automation"]
+classifiers = [
+  "Development Status :: 1 - Planning",
+  "Environment :: Console",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3 :: Only",
+  "Topic :: Software Development :: Libraries :: Python Modules",
+  "Typing :: Typed",
+]
+
+dependencies = ["PyYAML", "click"]
+
+[project.urls]
+Repository = "https://github.com/houseman/made"
+
+[project.optional-dependencies]
+
+dev = [
+  # Linting, type checking etc
+  "black",
+  "mypy",
+
+  # Test dependencies
+  "pytest",
+  "pytest-cov[all]",
+  "pytest-mock",
+]
+
+[project.scripts]
+made = "made:cli"
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["made*"]
+namespaces = false
+
+[tool.ruff]
+src = ["src", "tests"]
+
+# Same as Black.
+line-length = 88
+
+target-version = "py311"
+
+[tool.mypy]
+mypy_path = ["src"]
+python_version = 3.11
+ignore_errors = false
+disallow_untyped_calls = true
+disallow_untyped_defs = true
+no_implicit_optional = true
+warn_no_return = true
+
+[[tool.mypy.overrides]]
+module = ["tests.*"]
+ignore_errors = true
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
+addopts = "--cov --cov-report html --cov-report term-missing --cov-report xml --no-cov-on-fail --cov-fail-under 100"
+
+[tool.coverage.run]
+branch = true
+source = ["src"]
+omit = ["tests/*"]
+
+[tool.coverage.report]
+fail_under = 100
+skip_empty = true
+show_missing = true
+exclude_lines = ["pragma: no cover", "if TYPE_CHECKING:"]

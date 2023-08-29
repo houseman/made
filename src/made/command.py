@@ -1,7 +1,7 @@
 import click
 import subprocess
 
-from schema.model import JobSchema
+from made.schema.model import JobSchema
 
 
 class MadeCommand(click.Command):

@@ -2,8 +2,8 @@ from pprint import pformat
 import click
 import yaml
 
-from schema.model import MadeSchema, JobCollection
-from command import MadeCommand
+from made.schema.model import MadeSchema, JobCollection
+from made.command import MadeCommand
 
 
 class MadeController:

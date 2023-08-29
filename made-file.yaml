@@ -8,11 +8,11 @@ jobs:
   - id: format
     help: Run the black formatter
     run: black
-    args: ["."]
+    args: ["src"]
   - id: ruff
     help: Run the ruff linter
     run: ruff
-    args: ["--fix", "."]
+    args: ["--fix", "src"]
   - id: test
     help: Run unit tests
     run: pytest

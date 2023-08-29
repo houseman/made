@@ -5,8 +5,8 @@ from abc import ABC, abstractmethod
 from dataclasses import asdict, dataclass, field
 from typing import Self, Any, TypeAlias
 
-from schema.source import VarSchemaSource, JobSchemaSource, MadeSchemaSource
-from error import SchemaError, VarError
+from made.schema.source import VarSchemaSource, JobSchemaSource, MadeSchemaSource
+from made.error import SchemaError, VarError
 
 
 class AbstractBaseSchema(ABC):
