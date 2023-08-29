@@ -2,8 +2,8 @@ from pprint import pformat
 import click
 import yaml
 
-from made.model import MadeModel, JobModelCollection
-from made.command import MadeCommand
+from . import model as m
+from .command import MadeCommand
 
 
 class MadeController:
@@ -16,16 +16,16 @@ class MadeController:
         with open("made-file.yaml") as made_file:
             made_config = yaml.safe_load(made_file)
 
-        self.schema = MadeModel.from_dict(made_config)
+        self.model = m.MadeModel.from_dict(made_config)
         if self.verbose:
-            print(f"schema: {pformat(self.schema)}")
+            print(f"model: {pformat(self.model)}")
 
-    def get_jobs(self) -> JobModelCollection:
-        return self.schema.jobs
+    def get_jobs(self) -> m.JobModelCollection:
+        return self.model.jobs
 
     def register_job_commands(self) -> click.Group:
-        cli = click.Group()
-        for job in self.schema.jobs.values():
+        cli = click.Group("commands")
+        for job in self.model.jobs.values():
             command = MadeCommand(job=job)
             cli.add_command(command)
 

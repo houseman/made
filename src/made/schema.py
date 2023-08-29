@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-from typing import TypedDict
+import typing as t
 
 
-class BaseSchema(TypedDict):
+class BaseSchema(t.TypedDict):
     pass
 
 

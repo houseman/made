@@ -1,13 +1,17 @@
+from __future__ import annotations
+
 import click
 import subprocess
+import typing as t
 
-from made.model import JobModel
+if t.TYPE_CHECKING:
+    from . import model as m
 
 
 class MadeCommand(click.Command):
-    def __init__(self, job: JobModel):
+    def __init__(self, job: m.JobModel):
         self.job = job
-        super().__init__(job.id, callback=self.exec)
+        super().__init__(name=job.id, help=job.help, callback=self.exec)
 
     def exec(self) -> tuple:
         click.secho(f"Execute: {self.job.help}!", bold=True)

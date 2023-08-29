@@ -1,3 +1,3 @@
-from made.view import cli
+from .view import cli
 
 cli()
