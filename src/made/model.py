@@ -1,10 +1,12 @@
 from __future__ import annotations
 
 import re
-from abc import ABC, abstractmethod
-from dataclasses import asdict, dataclass, field
 import typing as t
 
+from abc import ABC, abstractmethod
+from dataclasses import asdict, dataclass, field
+
+import typing_extensions as te
 
 from . import error as err
 
@@ -14,7 +16,7 @@ if t.TYPE_CHECKING:
 
 class AbstractBaseModel(ABC):
     @abstractmethod
-    def validate(self) -> t.Self:
+    def validate(self) -> te.Self:
         pass
 
     @staticmethod
@@ -25,7 +27,7 @@ class AbstractBaseModel(ABC):
 
 @dataclass
 class BaseModel(AbstractBaseModel):
-    def validate(self) -> t.Self:
+    def validate(self) -> te.Self:
         return self
 
     def _validate_required_attrs(self, attrs: set[str | tuple[str, ...]]) -> None:
@@ -52,7 +54,7 @@ class VarModel(BaseModel):
     id: str
     value: str
 
-    def validate(self) -> t.Self:
+    def validate(self) -> te.Self:
         self._validate_required_attrs({"id", "value"})
 
         return self
@@ -70,7 +72,7 @@ class JobModel(BaseModel):
     jobs: dict[str, JobModel] = field(default_factory=dict)
     args: list[str] = field(default_factory=list)
 
-    def validate(self) -> t.Self:
+    def validate(self) -> te.Self:
         self._validate_required_attrs({"id", ("run", "jobs")})
 
         return self
@@ -96,8 +98,8 @@ class JobModel(BaseModel):
         ).validate()
 
 
-JobModelCollection: t.TypeAlias = dict[str, JobModel]
-VarModelCollection: t.TypeAlias = dict[str, VarModel]
+JobModelCollection: te.TypeAlias = dict[str, JobModel]
+VarModelCollection: te.TypeAlias = dict[str, VarModel]
 
 
 @dataclass
@@ -105,7 +107,7 @@ class MadeModel(BaseModel):
     vars: VarModelCollection
     jobs: JobModelCollection
 
-    def validate(self) -> t.Self:
+    def validate(self) -> te.Self:
         for job in self.jobs.values():
             job._validate_args(list(self.vars.keys()))
         return self

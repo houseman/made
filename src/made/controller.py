@@ -1,4 +1,5 @@
 from pprint import pformat
+
 import click
 import yaml
 

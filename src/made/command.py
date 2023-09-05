@@ -1,8 +1,9 @@
 from __future__ import annotations
 
-import click
 import subprocess
 import typing as t
+
+import click
 
 if t.TYPE_CHECKING:
     from . import model as m
