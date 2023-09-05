@@ -1,3 +1,5 @@
+import os
+
 from pprint import pformat
 
 import click
@@ -8,14 +10,15 @@ from .command import MadeCommand
 
 
 class MadeController:
-    verbose: bool = False
+    verbose: bool = True
 
     def __init__(self) -> None:
         self.load_schema()
 
     def load_schema(self) -> None:
-        with open("made-file.yaml") as made_file:
-            made_config = yaml.safe_load(made_file)
+        made_file = os.path.join(os.getcwd(), "made-file.yaml")
+        with open(made_file, encoding="locale") as f:
+            made_config = yaml.safe_load(f)
 
         self.model = m.MadeModel.from_dict(made_config)
         if self.verbose:
@@ -25,7 +28,7 @@ class MadeController:
         return self.model.jobs
 
     def register_job_commands(self) -> click.Group:
-        cli = click.Group("commands")
+        cli = click.Group("jobs")
         for job in self.model.jobs.values():
             command = MadeCommand(job=job)
             cli.add_command(command)

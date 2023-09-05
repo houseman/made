@@ -13,6 +13,10 @@ jobs:
     help: Run the ruff linter
     run: ruff
     args: ["--fix", "src"]
+  - id: mypy
+    help: Run the mypy type checker
+    run: mypy
+    args: ["src"]
   - id: test
     help: Run unit tests
     run: pytest
